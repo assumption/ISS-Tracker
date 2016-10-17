@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/ISS-Tracker.iml" filepath="$PROJECT_DIR$/ISS-Tracker.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ISSTracker.iml" filepath="$PROJECT_DIR$/ISSTracker.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
     </modules>
   </component>
