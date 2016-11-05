@@ -151,7 +151,6 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.cardboard:
-
                 break;
         }
         return super.onOptionsItemSelected(item);
