@@ -32,7 +32,6 @@ import edu.calpoly.isstracker.IssData.AsyncTaskCallback;
 import edu.calpoly.isstracker.IssData.IssData;
 import edu.calpoly.isstracker.IssData.IssDataAsyncRequest;
 import edu.calpoly.isstracker.IssData.Pojos.IssPosition;
-import isstracker.calpoly.edu.iss_tracker.R;
 
 public class IssMapActivity extends AppCompatActivity {
 

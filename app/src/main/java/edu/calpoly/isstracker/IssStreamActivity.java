@@ -22,8 +22,6 @@ import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import isstracker.calpoly.edu.iss_tracker.R;
-
 public class IssStreamActivity extends AppCompatActivity {
 
     public static final String VIDEO_ID = "-xIx-LHG8Wc"; // -xIx-LHG8Wc or UGPuEDyAsU8

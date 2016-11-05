@@ -19,8 +19,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
-import isstracker.calpoly.edu.iss_tracker.R;
-
 public class MainActivity extends AppCompatActivity {
 
     private boolean tablet;

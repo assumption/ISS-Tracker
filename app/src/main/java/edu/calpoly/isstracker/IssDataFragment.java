@@ -18,7 +18,6 @@ import java.util.List;
 import edu.calpoly.isstracker.IssData.AsyncTaskCallback;
 import edu.calpoly.isstracker.IssData.IssData;
 import edu.calpoly.isstracker.IssData.ListItem;
-import isstracker.calpoly.edu.iss_tracker.R;
 
 public class IssDataFragment extends Fragment {
 
