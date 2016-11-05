@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:id="@+id/items" android:checkableBehavior="none">
+        <item android:id="@+id/home"
+              android:title="@string/home_nav_drawer"
+              android:icon="@drawable/ic_public_black_24dp"
+              android:checked="true"/>
+
+        <item android:id="@+id/map"
+              android:title="@string/map_nav_drawer"
+              android:icon="@drawable/ic_map_black_24dp"/>
+
+        <item android:id="@+id/stream"
+              android:title="@string/stream_nav_drawer"
+              android:icon="@drawable/ic_play_circle_filled_black_24dp"/>
+    </group>
+
+    <item android:id="@+id/about"
+          android:title="@string/about_nav_drawer"
+          android:icon="@drawable/ic_info_black_24dp"/>
+</menu>

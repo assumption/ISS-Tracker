@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <bool name="tablet">false</bool>
+    <bool name="landscape">false</bool>
+    <bool name="translucent_nav_bar">true</bool>
+</resources>

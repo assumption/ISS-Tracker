@@ -1,3 +1,14 @@
 <resources>
+    <string name="api_key">AIzaSyB0RLmsquEqkDAudZWpkkAtcmVK0E8Xdww</string>
+
     <string name="app_name">ISS-Tracker</string>
+    <string name="bottom_sheet_title">ISS Data</string>
+    <string name="home_nav_drawer">Home</string>
+    <string name="map_nav_drawer">Map</string>
+    <string name="stream_nav_drawer">ISS Live Stream</string>
+    <string name="about_nav_drawer">About</string>
+    <string name="drawer_open">Drawer Open</string>
+    <string name="drawer_close">Drawer Close</string>
+    <string name="iss_live_stream_info">Info</string>
+    <string name="cardboard">Cardboard View</string>
 </resources>
