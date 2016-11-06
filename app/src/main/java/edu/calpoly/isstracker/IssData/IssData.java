@@ -32,9 +32,9 @@ public class IssData {
         }
 
         if(astronauts != null){
-            dataList.add(new ListItem("Astronauts: ", "", true, false));
+            dataList.add(new ListItem("Astronauts in Space: ", "", true, false));
             for (int i = 0; i < astronauts.size(); i++){
-                dataList.add(new ListItem(astronauts.get(i).getName(), "", false, true));
+                dataList.add(new ListItem(astronauts.get(i).getName() + ", " + astronauts.get(i).getCraft(), "", false, true));
             }
         }
 

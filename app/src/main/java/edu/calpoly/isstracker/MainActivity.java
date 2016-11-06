@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
             transaction.replace(R.id.bottom_sheet_container, fragment).commit();
 
             View bottomSheet = findViewById(R.id.bottom_sheet_container);
-            BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
+            final BottomSheetBehavior behavior = BottomSheetBehavior.from(bottomSheet);
             int peekHeight = (int) (getResources().getDimension(R.dimen.bottom_sheet_header_height)
                     + (navBar && !landscape ? getResources().getDimension(R.dimen.nav_bar_height) : 0));
             behavior.setPeekHeight(peekHeight);
