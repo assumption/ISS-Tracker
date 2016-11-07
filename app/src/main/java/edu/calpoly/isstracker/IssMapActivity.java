@@ -124,7 +124,7 @@ public class IssMapActivity extends AppCompatActivity {
             LatLng pos = new LatLng(latitude, longitude);
             if (issMarker == null) {
                 Bitmap.Config conf = Bitmap.Config.ARGB_8888;
-                Bitmap bmp = Bitmap.createBitmap(192, 192, conf);
+                Bitmap bmp = Bitmap.createBitmap(150, 150, conf);
                 Canvas canvas = new Canvas(bmp);
 
                 Paint color = new Paint();
@@ -135,8 +135,8 @@ public class IssMapActivity extends AppCompatActivity {
                 opt.inMutable = true;
 
                 Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.iss_icon, opt);
-                Bitmap resized = Bitmap.createScaledBitmap(imageBitmap, 176, 176, true);
-                canvas.drawBitmap(resized, 8, 8, color);
+                Bitmap resized = Bitmap.createScaledBitmap(imageBitmap, 130, 130, true);
+                canvas.drawBitmap(resized, 10, 10, color);
 
                 issMarker = mMap.addMarker(new MarkerOptions()
                         .position(pos)

@@ -13,7 +13,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 
@@ -54,7 +53,6 @@ public class IssDataFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(new RecyclerViewAdapter(issData.getDataListItems()));
         //set text paddingBottom and alpha
-        recyclerView.setAlpha(tablet ? 1.0f : 0.0f);
         if(navBar && !landscape){
             recyclerView.setPadding(recyclerView.getPaddingLeft(),
                     recyclerView.getPaddingTop(),
@@ -62,12 +60,14 @@ public class IssDataFragment extends Fragment {
                     recyclerView.getPaddingBottom() + (int) getResources().getDimension(R.dimen.nav_bar_height));
         }
 
+        onSlide(tablet ? 1.0f : 0.0f);
+
         return v;
     }
 
     public void onSlide(float slideOffset){
         //elevate and color toolbar
-        int header_color = ContextCompat.getColor(getContext(), R.color.grey_800);
+        int header_color = ContextCompat.getColor(getContext(), R.color.a_bit_lighter_than_grey_900);
         header.setBackgroundColor(Color.argb((int) (slideOffset * 255), Color.red(header_color),
                 Color.green(header_color), Color.blue(header_color)));
         header.setCardElevation(slideOffset * getResources().getDimension(R.dimen.toolbar_elevation));

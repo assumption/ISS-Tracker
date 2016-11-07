@@ -2,4 +2,6 @@
 <resources>
     <bool name="landscape">true</bool>
     <bool name="translucent_nav_bar">false</bool>
+    <bool name="bottomSheet">true</bool>
+    <bool name="status_bar">false</bool>
 </resources>

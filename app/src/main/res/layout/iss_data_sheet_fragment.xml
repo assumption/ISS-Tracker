@@ -5,7 +5,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
-        android:background="@color/a_bit_darker_than_grey_800">
+        android:background="@color/grey_900"
+        android:saveEnabled="false">
 
     <android.support.v7.widget.CardView
             android:id="@+id/header"

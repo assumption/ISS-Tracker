@@ -3,4 +3,6 @@
     <bool name="tablet">false</bool>
     <bool name="landscape">false</bool>
     <bool name="translucent_nav_bar">true</bool>
+    <bool name="bottomSheet">true</bool>
+    <bool name="status_bar">true</bool>
 </resources>
