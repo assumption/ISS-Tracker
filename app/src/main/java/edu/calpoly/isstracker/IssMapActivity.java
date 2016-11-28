@@ -134,7 +134,7 @@ public class IssMapActivity extends AppCompatActivity {
                 BitmapFactory.Options opt = new BitmapFactory.Options();
                 opt.inMutable = true;
 
-                Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.iss_icon, opt);
+                Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.iss_icon_for_map, opt);
                 Bitmap resized = Bitmap.createScaledBitmap(imageBitmap, 130, 130, true);
                 canvas.drawBitmap(resized, 10, 10, color);
 

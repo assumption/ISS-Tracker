@@ -25,7 +25,7 @@ import android.widget.TextView;
 
 public class IssStreamActivity extends AppCompatActivity {
 
-    public static final String VIDEO_ID = "-xIx-LHG8Wc"; // -xIx-LHG8Wc or UGPuEDyAsU8
+    public static final String VIDEO_ID = "ddFvjfvPnqk";
 
     private YouTubePlayer player;
 

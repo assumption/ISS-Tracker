@@ -31,6 +31,6 @@
 
         <activity
             android:name="edu.calpoly.isstracker.SimulationVR"
-            android:screenOrientation="landscape" />
+            android:screenOrientation="landscape"/>
     </application>
 </manifest>

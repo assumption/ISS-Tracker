@@ -4,6 +4,6 @@
 
     <item android:id="@+id/cardboard"
           android:title="@string/cardboard"
-          android:icon="@drawable/ic_google_cardboard"
+          android:icon="@drawable/google_cardboard"
           app:showAsAction="always"/>
 </menu>
