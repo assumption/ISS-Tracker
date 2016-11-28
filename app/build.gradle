@@ -17,6 +17,19 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    defaultConfig {
+        multiDexEnabled true
+    }
+    sourceSets {
+        main {
+            jniLibs.srcDir 'libs'
+        }
+    }
+}
+
+ext {
+    gdxVersion = '1.7.1'
+    gdxCardboardVersion = '0.2'
 }
 
 dependencies {
@@ -39,5 +52,11 @@ dependencies {
     compile 'com.google.android.gms:play-services-maps:9.8.0'
 
     compile 'com.github.bumptech.glide:glide:3.7.0'
+
+    compile "com.badlogicgames.gdx:gdx-backend-android:${gdxVersion}"
+    compile "com.badlogicgames.gdx:gdx:${gdxVersion}"
+    compile files('libs/cardboard.jar')
+    compile files('libs/libprotobuf-java-2.6-nano.jar')
+    compile "com.github.yangweigbh:libgdx-cardboard-core:${gdxCardboardVersion}"
 }
 

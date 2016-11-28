@@ -21,15 +21,19 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.badlogic.gdx.backends.android.AndroidApplication;
+import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements AndroidFragmentApplication.Callbacks {
 
     private boolean tablet;
 
     private Toolbar toolbar;
     private IssDataFragment fragment;
+    private SimulationFragment simFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,6 +49,8 @@ public class MainActivity extends AppCompatActivity {
         initDataFragment();
 
         initLeftNavDrawer();
+
+        initSimulation();
     }
 
     public void initDataFragment() {
@@ -153,6 +159,14 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void initSimulation() {
+        simFragment = new SimulationFragment();
+        getSupportFragmentManager()
+                .beginTransaction()
+                .add(R.id.simulation_view, simFragment)
+                .commit();
+    }
+
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
@@ -172,6 +186,13 @@ public class MainActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_main, menu);
         //color info icon
         menu.getItem(0).getIcon().setColorFilter(ContextCompat.getColor(this, R.color.text_color_secondary), PorterDuff.Mode.SRC_IN);
+        menu.getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem menuItem) {
+                startActivity(new Intent(MainActivity.this, SimulationVR.class));
+                return false;
+            }
+        });
         return true;
     }
 
@@ -182,5 +203,10 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void exit() {
+
     }
 }

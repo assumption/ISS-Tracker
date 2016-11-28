@@ -4,6 +4,6 @@
 
     <item android:id="@+id/iss_live_stream_info"
           android:title="@string/iss_live_stream_info"
-          android:icon="@drawable/ic_info"
+          android:icon="@drawable/ic_info_black_24dp"
           app:showAsAction="always"/>
 </menu>
