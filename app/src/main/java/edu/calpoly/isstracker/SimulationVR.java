@@ -118,7 +118,7 @@ public class SimulationVR extends CardBoardAndroidApplication implements CardBoa
 
                         ISSMath.convertToXyz(issPosition);
                         cam.position.set(issPosition);
-                        //cam.lookAt(0f, 0f, 0f); Debugging
+                        cam.lookAt(0f, issPosition.y, 0f);
                         light.set(0.2f, 0.2f, 0.2f, issPosition.x * -1, issPosition.y * -1, issPosition.z * -1);
 
                     } catch (JSONException e) {

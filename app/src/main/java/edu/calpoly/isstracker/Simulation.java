@@ -2,6 +2,7 @@ package edu.calpoly.isstracker;
 
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,30 +21,61 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
 import edu.calpoly.isstracker.IssData.ISSMath;
 
-public class Simulation extends ApplicationAdapter {
+public class Simulation extends ApplicationAdapter implements InputProcessor {
 
+    private PerspectiveCamera cam;
     private Model earthModel;
     private Model skyboxModel;
+    private Model issModel;
     private ModelInstance earthInstance;
     private ModelInstance skyboxInstance;
+    private ModelInstance issInstance;
     private ModelCache cache;
     private ModelBatch batch;
     private static final float Z_NEAR = 0.1f;
-    private static final float Z_FAR = 10000.0f;
+    private static final float Z_FAR = ISSMath.EARTH_R * 10;
 
-    public PerspectiveCamera cam;
+    private Vector3 origin = new Vector3(0f, 0f, 0f);
+    private Vector3 yAxis = new Vector3(0f, 1f, 0f);
+    private Vector3 camAxis = new Vector3(1f, 0f, 0f);
+    private int lastX = 0;
+    private int lastY = 0;
+
     public Vector3 issPosition;
+
+    private ScheduledExecutorService ses;
+    private Runnable issApiRequest;
+
+    private static final long REQUEST_INTERVAL = 2000;
+    private static final String API_URL = "https://api.wheretheiss.at/v1/satellites/25544";
 
     @Override
     public void create() {
+        Gdx.input.setInputProcessor(this);
+
         issPosition = new Vector3();
 
         cam = new PerspectiveCamera(75f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         cam.near = Z_NEAR;
         cam.far = Z_FAR;
-        cam.position.set(0f, 0f, ISSMath.EARTH_R * 2);
+        cam.position.set(0f, 0f, ISSMath.EARTH_R * 1.7f);
         cam.lookAt(0f, 0f, 0f);
 
         AssetManager assetManager = new AssetManager();
@@ -75,6 +107,13 @@ public class Simulation extends ApplicationAdapter {
         skyboxInstance = new ModelInstance(skyboxModel);
         skyboxInstance.materials.get(0).set(new IntAttribute(IntAttribute.CullFace, 0));
 
+        modelBuilder = new ModelBuilder();
+        issModel = modelBuilder.createSphere(ISSMath.EARTH_R / 10, ISSMath.EARTH_R / 10,
+                ISSMath.EARTH_R / 10, 32, 32,
+                new Material(ColorAttribute.createDiffuse(Color.RED)),
+                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        issInstance = new ModelInstance(issModel);
+
         Array<ModelInstance> instances = new Array<ModelInstance>();
         instances.add(earthInstance);
         instances.add(skyboxInstance);
@@ -85,6 +124,73 @@ public class Simulation extends ApplicationAdapter {
         cache.end();
 
         batch = new ModelBatch();
+
+        initIssApiRequest();
+    }
+
+    public void initIssApiRequest() {
+        issApiRequest = new Runnable() {
+            @Override
+            public void run() {
+                URL url = null;
+                try {
+                    url = new URL(API_URL);
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+                HttpURLConnection urlConnection = null;
+                try {
+                    urlConnection = (HttpURLConnection) url.openConnection();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                try {
+                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                    StringBuilder sb = new StringBuilder();
+
+                    String line = null;
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line + "\n");
+                    }
+                    String result = sb.toString();
+
+                    JSONObject json = new JSONObject(result);
+
+                    float latitude = 0;
+                    float longitude = 0;
+                    float altitude = 0;
+                    try {
+                        latitude = Float.valueOf(json.getString("latitude"));
+                        longitude = Float.valueOf(json.getString("longitude"));
+                        altitude = Float.valueOf(json.getString("altitude"));
+
+                        issPosition.x = latitude;
+                        issPosition.y = longitude;
+                        issPosition.z = altitude;
+
+                        ISSMath.convertToXyz(issPosition);
+                        updateIssPosition();
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                } finally {
+                    urlConnection.disconnect();
+                }
+            }
+        };
+
+        ses = Executors.newSingleThreadScheduledExecutor();
+        ses.scheduleAtFixedRate(issApiRequest, 0, REQUEST_INTERVAL, TimeUnit.MILLISECONDS);
+    }
+
+    public void updateIssPosition() {
+        issInstance.transform.setToTranslation(issPosition.x, issPosition.y, issPosition.z);
     }
 
     @Override
@@ -95,18 +201,17 @@ public class Simulation extends ApplicationAdapter {
         cam.update();
         batch.begin(cam);
         batch.render(cache);
+        batch.render(issInstance);
         batch.end();
-
-        //System.out.println("still running..." + this.toString());
     }
 
     @Override
     public void dispose() {
-        //System.out.println("disposing test");
         cache.dispose();
         batch.dispose();
         earthModel.dispose();
         skyboxModel.dispose();
+        issModel.dispose();
     }
 
     @Override
@@ -115,9 +220,62 @@ public class Simulation extends ApplicationAdapter {
 
     @Override
     public void pause() {
+        ses.shutdown();
     }
 
     @Override
     public void resume() {
+        ses = Executors.newSingleThreadScheduledExecutor();
+        ses.scheduleAtFixedRate(issApiRequest, 0, REQUEST_INTERVAL, TimeUnit.MILLISECONDS);
+    }
+
+    @Override
+    public boolean keyDown(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyUp(int keycode) {
+        return false;
+    }
+
+    @Override
+    public boolean keyTyped(char character) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+        lastX = screenX;
+        lastY = screenY;
+        return false;
+    }
+
+    @Override
+    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean touchDragged(int screenX, int screenY, int pointer) {
+        int deltaX = screenX - lastX;
+        int deltaY = screenY - lastY;
+
+        camAxis.rotate(yAxis, -deltaX / 4);
+        cam.rotateAround(origin, yAxis, -deltaX / 4);
+        cam.rotateAround(origin, camAxis, -deltaY / 4);
+        lastX = screenX;
+        lastY = screenY;
+        return false;
+    }
+
+    @Override
+    public boolean mouseMoved(int screenX, int screenY) {
+        return false;
+    }
+
+    @Override
+    public boolean scrolled(int amount) {
+        return false;
     }
 }
