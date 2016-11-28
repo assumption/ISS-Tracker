@@ -31,7 +31,7 @@ public class SimulationFragment extends AndroidFragmentApplication {
 
     private ScheduledExecutorService ses;
 
-    public Test simulation;
+    public Simulation simulation;
     public Runnable issApiRequest;
 
     @Override
@@ -78,7 +78,6 @@ public class SimulationFragment extends AndroidFragmentApplication {
 
                         ISSMath.convertToXyz(simulation.issPosition);
                         simulation.cam.position.set(simulation.issPosition.nor().scl(ISSMath.EARTH_R * 1.7f));
-                        System.out.println(simulation.issPosition.toString());
                         simulation.cam.lookAt(0f, 0f, 0f);
 
                     } catch (JSONException e) {
@@ -94,7 +93,7 @@ public class SimulationFragment extends AndroidFragmentApplication {
             }
         };
 
-        simulation = new Test();
+        simulation = new Simulation();
         return initializeForView(simulation);
     }
 

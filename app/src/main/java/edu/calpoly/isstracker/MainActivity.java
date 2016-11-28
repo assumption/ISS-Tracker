@@ -163,7 +163,7 @@ public class MainActivity extends AppCompatActivity implements AndroidFragmentAp
         simFragment = new SimulationFragment();
         getSupportFragmentManager()
                 .beginTransaction()
-                .add(R.id.simulation_view, simFragment)
+                .replace(R.id.simulation_view, simFragment)
                 .commit();
     }
 

@@ -1,12 +1,8 @@
 package edu.calpoly.isstracker;
 
-import android.os.Bundle;
-
-import com.badlogic.gdx.ApplicationListener;
+import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.assets.AssetManager;
-import com.badlogic.gdx.backends.android.AndroidApplication;
-import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -24,26 +20,10 @@ import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
 import edu.calpoly.isstracker.IssData.ISSMath;
-// source file from the other project, to be replaced with Test.java code
-public class Simulation extends AndroidApplication implements ApplicationListener {
 
-    private PerspectiveCamera cam;
+public class Simulation extends ApplicationAdapter {
+
     private Model earthModel;
     private Model skyboxModel;
     private ModelInstance earthInstance;
@@ -52,83 +32,9 @@ public class Simulation extends AndroidApplication implements ApplicationListene
     private ModelBatch batch;
     private static final float Z_NEAR = 0.1f;
     private static final float Z_FAR = 10000.0f;
-    private static final long REQUEST_INTERVAL = 2000;
 
-    private Vector3 issPosition;
-
-    private ScheduledExecutorService ses;
-    private Runnable issApiRequest;
-
-    private static final String API_URL = "https://api.wheretheiss.at/v1/satellites/25544";
-
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-        config.useAccelerometer = false;
-        config.useImmersiveMode = true;
-        config.disableAudio = true;
-        initialize(this, config);
-
-        issApiRequest = new Runnable() {
-            @Override
-            public void run() {
-                URL url = null;
-                try {
-                    url = new URL(API_URL);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                HttpURLConnection urlConnection = null;
-                try {
-                    urlConnection = (HttpURLConnection) url.openConnection();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    StringBuilder sb = new StringBuilder();
-
-                    String line = null;
-                    while ((line = reader.readLine()) != null) {
-                        sb.append(line + "\n");
-                    }
-                    String result = sb.toString();
-
-                    JSONObject json = new JSONObject(result);
-
-                    float latitude = 0;
-                    float longitude = 0;
-                    float altitude = 0;
-                    try {
-                        latitude = Float.valueOf(json.getString("latitude"));
-                        longitude = Float.valueOf(json.getString("longitude"));
-                        altitude = Float.valueOf(json.getString("altitude"));
-
-                        issPosition.x = latitude;
-                        issPosition.y = longitude;
-                        issPosition.z = altitude;
-
-                        ISSMath.convertToXyz(issPosition);
-                        //cam.position.set(issPosition);
-                        cam.position.set(issPosition.nor().scl(ISSMath.EARTH_R * 1.7f));
-                        System.out.println(issPosition.toString());
-                        cam.lookAt(0f, 0f, 0f);
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    urlConnection.disconnect();
-                }
-            }
-        };
-    }
+    public PerspectiveCamera cam;
+    public Vector3 issPosition;
 
     @Override
     public void create() {
@@ -190,29 +96,17 @@ public class Simulation extends AndroidApplication implements ApplicationListene
         batch.begin(cam);
         batch.render(cache);
         batch.end();
+
+        //System.out.println("still running..." + this.toString());
     }
 
     @Override
     public void dispose() {
+        //System.out.println("disposing test");
         cache.dispose();
         batch.dispose();
         earthModel.dispose();
         skyboxModel.dispose();
-    }
-
-    @Override
-    protected void onPause() {
-        super.onPause();
-
-        ses.shutdown();
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-
-        ses = Executors.newSingleThreadScheduledExecutor();
-        ses.scheduleAtFixedRate(issApiRequest, 0, REQUEST_INTERVAL, TimeUnit.MILLISECONDS);
     }
 
     @Override
