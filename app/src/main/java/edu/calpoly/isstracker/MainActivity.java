@@ -20,7 +20,6 @@ public class MainActivity extends BaseActivity implements AndroidFragmentApplica
 
     private boolean tablet;
 
-    private Toolbar toolbar;
     private IssDataFragment fragment;
     private SimulationFragment simFragment;
 
@@ -31,7 +30,7 @@ public class MainActivity extends BaseActivity implements AndroidFragmentApplica
 
         tablet = getResources().getBoolean(R.bool.tablet);
 
-        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setToolbar(toolbar);
         //setSupportActionBar(toolbar);
