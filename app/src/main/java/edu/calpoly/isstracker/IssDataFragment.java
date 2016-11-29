@@ -42,11 +42,6 @@ public class IssDataFragment extends Fragment {
             public void done(IssData issData) {
                 updateData(issData);
             }
-
-            @Override
-            public void timeoutError() {
-
-            }
         });
 
         recyclerView = (RecyclerView) v.findViewById(R.id.recyclerView);

@@ -15,15 +15,22 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.PorterDuff;
+import android.graphics.Typeface;
+import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Locale;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -61,7 +68,7 @@ public class IssMapActivity extends AppCompatActivity {
             public void onMapReady(GoogleMap googleMap) {
                 mMap = googleMap;
                 //for the info window
-                /*mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
+                mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
 
                     @Override
                     public View getInfoWindow(Marker arg0) {
@@ -79,42 +86,34 @@ public class IssMapActivity extends AppCompatActivity {
                         title.setGravity(Gravity.CENTER);
                         title.setText(marker.getTitle());
 
-                        *//*TextView altitude = new TextView(IssMapActivity.this);
+                        TextView altitude = new TextView(IssMapActivity.this);
                         altitude.setTextColor(Color.GRAY);
-                        altitude.setText("Altitude: " + String.format(Locale.getDefault(), "%.2f", issData.altitude) + " km");
+                        altitude.setText("Altitude: " + String.format(Locale.getDefault(), "%.2f", issData.getPosition().getAltitude()) + " km");
 
                         TextView velocity = new TextView(IssMapActivity.this);
                         velocity.setTextColor(Color.GRAY);
-                        velocity.setText("Velocity: " + String.format(Locale.getDefault(), "%.2f", issData.velocity) + " km/h");*//*
+                        velocity.setText("Velocity: " + String.format(Locale.getDefault(), "%.2f", issData.getPosition().getVelocity()) + " km/h");
 
                         info.addView(title);
-                        *//*info.addView(altitude);
-                        info.addView(velocity);*//*
+                        info.addView(altitude);
+                        info.addView(velocity);
 
                         return info;
                     }
-                });*/
+                });
             }
         });
 
         issData = new IssData();
+        listenToIssPosition();
     }
 
-    public void refreshData() {
-        this.snackbar = Snackbar.make(findViewById(R.id.root_view), "Loading...", Snackbar.LENGTH_INDEFINITE);
-        snackbar.show();
-        issData.refreshPosition(new AsyncTaskCallback() {
+    public void listenToIssPosition(){
+        issData.listenToPositionRefreshing(new AsyncTaskCallback() {
             @Override
             public void done(IssData issData) {
                 IssPosition position = issData.getPosition();
                 setPosition(position.getLatitude(), position.getLongitude());
-                snackbar.dismiss();
-            }
-
-            @Override
-            public void timeoutError() {
-                Toast.makeText(IssMapActivity.this, "SocketTimeoutException", Toast.LENGTH_SHORT).show();
-                snackbar.dismiss();
             }
         });
     }
@@ -157,7 +156,7 @@ public class IssMapActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         //refresh Iss position every 10 seconds
-        t = new Timer();
+        /*t = new Timer();
         t.scheduleAtFixedRate(
                 new TimerTask() {
                     @Override
@@ -165,23 +164,25 @@ public class IssMapActivity extends AppCompatActivity {
                         refreshData();
 
                     }
-                }, 0, 10 * 1000);
+                }, 0, 2 * 1000);*/
+        issData.startRefreshingPosition();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        if (t != null) {
+        /*if (t != null) {
             t.cancel();
             t.purge();
             t = null;
-        }
+        }*/
+        issData.stopRefreshingPosition();
 
-        if (snackbar != null) {
+        /*if (snackbar != null) {
             snackbar.dismiss();
-        }
+        }*/
 
-        issMarker = null;
+        //issMarker = null;
     }
 
     @Override
@@ -208,5 +209,4 @@ public class IssMapActivity extends AppCompatActivity {
             }
         }
     }
-
 }

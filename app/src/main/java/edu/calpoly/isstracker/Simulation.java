@@ -36,9 +36,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import edu.calpoly.isstracker.IssData.AsyncTaskCallback;
 import edu.calpoly.isstracker.IssData.ISSMath;
+import edu.calpoly.isstracker.IssData.IssData;
+import edu.calpoly.isstracker.IssData.Pojos.IssPosition;
 
-public class Simulation extends ApplicationAdapter implements InputProcessor {
+class Simulation extends ApplicationAdapter implements InputProcessor {
 
     private PerspectiveCamera cam;
     private Model earthModel;
@@ -58,13 +61,14 @@ public class Simulation extends ApplicationAdapter implements InputProcessor {
     private int lastX = 0;
     private int lastY = 0;
 
-    public Vector3 issPosition;
+    private Vector3 issPosition;
 
-    private ScheduledExecutorService ses;
-    private Runnable issApiRequest;
+    //private ScheduledExecutorService ses;
+    //private Runnable issApiRequest;
 
-    private static final long REQUEST_INTERVAL = 2000;
-    private static final String API_URL = "https://api.wheretheiss.at/v1/satellites/25544";
+    //private static final long REQUEST_INTERVAL = 2000;
+    //private static final String API_URL = "https://api.wheretheiss.at/v1/satellites/25544";
+    private IssData issData;
 
     @Override
     public void create() {
@@ -114,7 +118,7 @@ public class Simulation extends ApplicationAdapter implements InputProcessor {
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         issInstance = new ModelInstance(issModel);
 
-        Array<ModelInstance> instances = new Array<ModelInstance>();
+        Array<ModelInstance> instances = new Array<>();
         instances.add(earthInstance);
         instances.add(skyboxInstance);
 
@@ -125,10 +129,14 @@ public class Simulation extends ApplicationAdapter implements InputProcessor {
 
         batch = new ModelBatch();
 
-        initIssApiRequest();
+        issData = new IssData();
+        listenToIssPosition();
+        issData.startRefreshingPosition();
+
+        //initIssApiRequest();
     }
 
-    public void initIssApiRequest() {
+    /*public void initIssApiRequest() {
         issApiRequest = new Runnable() {
             @Override
             public void run() {
@@ -187,9 +195,24 @@ public class Simulation extends ApplicationAdapter implements InputProcessor {
 
         ses = Executors.newSingleThreadScheduledExecutor();
         ses.scheduleAtFixedRate(issApiRequest, 0, REQUEST_INTERVAL, TimeUnit.MILLISECONDS);
+    }*/
+
+    private void listenToIssPosition(){
+        issData.listenToPositionRefreshing(new AsyncTaskCallback() {
+            @Override
+            public void done(IssData issData) {
+                IssPosition position = issData.getPosition();
+                issPosition.x = position.getLatitude();
+                issPosition.y = position.getLongitude();
+                issPosition.z = position.getAltitude();
+
+                ISSMath.convertToXyz(issPosition);
+                updateIssPosition();
+            }
+        });
     }
 
-    public void updateIssPosition() {
+    private void updateIssPosition() {
         issInstance.transform.setToTranslation(issPosition.x, issPosition.y, issPosition.z);
     }
 
@@ -220,13 +243,15 @@ public class Simulation extends ApplicationAdapter implements InputProcessor {
 
     @Override
     public void pause() {
-        ses.shutdown();
+        /*ses.shutdown();*/
+        issData.stopRefreshingPosition();
     }
 
     @Override
     public void resume() {
-        ses = Executors.newSingleThreadScheduledExecutor();
-        ses.scheduleAtFixedRate(issApiRequest, 0, REQUEST_INTERVAL, TimeUnit.MILLISECONDS);
+        /*ses = Executors.newSingleThreadScheduledExecutor();
+        ses.scheduleAtFixedRate(issApiRequest, 0, REQUEST_INTERVAL, TimeUnit.MILLISECONDS);*/
+        issData.startRefreshingPosition();
     }
 
     @Override
@@ -261,9 +286,9 @@ public class Simulation extends ApplicationAdapter implements InputProcessor {
         int deltaX = screenX - lastX;
         int deltaY = screenY - lastY;
 
-        camAxis.rotate(yAxis, -deltaX / 4);
-        cam.rotateAround(origin, yAxis, -deltaX / 4);
-        cam.rotateAround(origin, camAxis, -deltaY / 4);
+        camAxis.rotate(yAxis, -deltaX / 8);
+        cam.rotateAround(origin, yAxis, -deltaX / 8);
+        cam.rotateAround(origin, camAxis, -deltaY / 8);
         lastX = screenX;
         lastY = screenY;
         return false;

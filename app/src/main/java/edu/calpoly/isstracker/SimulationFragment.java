@@ -1,6 +1,7 @@
 package edu.calpoly.isstracker;
 
 import android.os.Bundle;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,16 +27,30 @@ import edu.calpoly.isstracker.IssData.ISSMath;
 
 public class SimulationFragment extends AndroidFragmentApplication {
 
-    private ScheduledExecutorService ses;
+    public static SimulationFragment getInstance(Simulation simulation){
+        SimulationFragment fragment = new SimulationFragment();
+        fragment.setSimulation(simulation);
+        return fragment;
+    }
+    //private ScheduledExecutorService ses;
 
     public Simulation simulation;
-    public Runnable issApiRequest;
+    //public Runnable issApiRequest;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        simulation = new Simulation();
-
+        if(simulation == null){
+            simulation = new Simulation();
+        }
         return initializeForView(simulation);
+    }
+
+    public Simulation getSimulation(){
+        return simulation;
+    }
+
+    public void setSimulation(Simulation simulation){
+        this.simulation = simulation;
     }
 
     @Override
