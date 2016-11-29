@@ -153,6 +153,12 @@ public class MainActivity extends BaseActivity implements AndroidFragmentApplica
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        simFragment.onStop();
+    }
+
+    @Override
     public void exit() {
 
     }

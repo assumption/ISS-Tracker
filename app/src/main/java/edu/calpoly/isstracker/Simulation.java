@@ -1,5 +1,8 @@
 package edu.calpoly.isstracker;
 
+import android.util.Log;
+import android.widget.Toast;
+
 import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
@@ -244,6 +247,10 @@ class Simulation extends ApplicationAdapter implements InputProcessor {
     @Override
     public void pause() {
         /*ses.shutdown();*/
+    }
+
+    public void onStop(){
+        Log.d("SIMULATION", "onStop() called");
         issData.stopRefreshingPosition();
     }
 

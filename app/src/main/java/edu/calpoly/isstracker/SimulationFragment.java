@@ -54,6 +54,12 @@ public class SimulationFragment extends AndroidFragmentApplication {
     }
 
     @Override
+    public void onStop() {
+        super.onStop();
+        simulation.onStop();
+    }
+
+    @Override
     public void exit() {
 
     }
