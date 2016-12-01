@@ -90,7 +90,8 @@ public class IssData {
             @Override
             protected void onPostExecute(IssData issData) {
                 super.onPostExecute(issData);
-                if(positionListener != null){
+                if(positionListener != null
+                        && issData.getPosition() != null){
                     positionListener.done(IssData.this);
                 }
             }

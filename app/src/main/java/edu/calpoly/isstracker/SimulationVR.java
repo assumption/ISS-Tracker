@@ -45,7 +45,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import edu.calpoly.isstracker.IssData.AsyncTaskCallback;
 import edu.calpoly.isstracker.IssData.ISSMath;
+import edu.calpoly.isstracker.IssData.IssData;
+import edu.calpoly.isstracker.IssData.Pojos.IssPosition;
 
 public class SimulationVR extends CardBoardAndroidApplication implements CardBoardApplicationListener {
 
@@ -64,10 +67,12 @@ public class SimulationVR extends CardBoardAndroidApplication implements CardBoa
     private Vector3 issPosition;
     private DirectionalLight light;
 
-    private ScheduledExecutorService ses;
-    private Runnable issApiRequest;
+    /*private ScheduledExecutorService ses;
+    private Runnable issApiRequest;*/
 
-    private static final String API_URL = "https://api.wheretheiss.at/v1/satellites/25544";
+    /*private static final String API_URL = "https://api.wheretheiss.at/v1/satellites/25544";*/
+
+    private IssData issData;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,7 +81,11 @@ public class SimulationVR extends CardBoardAndroidApplication implements CardBoa
         config.disableAudio = true;
         initialize(this, config);
 
-        issApiRequest = new Runnable() {
+        issData = new IssData();
+        listenToIssPosition();
+        issData.startRefreshingPosition();
+
+        /*issApiRequest = new Runnable() {
             @Override
             public void run() {
                 URL url = null;
@@ -132,7 +141,24 @@ public class SimulationVR extends CardBoardAndroidApplication implements CardBoa
                     urlConnection.disconnect();
                 }
             }
-        };
+        };*/
+    }
+
+    private void listenToIssPosition(){
+        issData.listenToPositionRefreshing(new AsyncTaskCallback() {
+            @Override
+            public void done(IssData issData) {
+                IssPosition position = issData.getPosition();
+                issPosition.x = position.getLatitude();
+                issPosition.y = position.getLongitude();
+                issPosition.z = position.getAltitude();
+
+                ISSMath.convertToXyz(issPosition);
+                cam.position.set(issPosition);
+                cam.lookAt(0f, issPosition.y, 0f);
+                light.set(0.2f, 0.2f, 0.2f, issPosition.x * -1, issPosition.y * -1, issPosition.z * -1);
+            }
+        });
     }
 
     @Override
@@ -253,17 +279,24 @@ public class SimulationVR extends CardBoardAndroidApplication implements CardBoa
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+        issData.stopRefreshingPosition();
+    }
+
+    /*@Override
     protected void onPause() {
         super.onPause();
 
         ses.shutdown();
-    }
+    }*/
 
     @Override
     protected void onResume() {
         super.onResume();
+        issData.startRefreshingPosition();
 
-        ses = Executors.newSingleThreadScheduledExecutor();
-        ses.scheduleAtFixedRate(issApiRequest, 0, REQUEST_INTERVAL, TimeUnit.MILLISECONDS);
+        /*ses = Executors.newSingleThreadScheduledExecutor();
+        ses.scheduleAtFixedRate(issApiRequest, 0, REQUEST_INTERVAL, TimeUnit.MILLISECONDS);*/
     }
 }

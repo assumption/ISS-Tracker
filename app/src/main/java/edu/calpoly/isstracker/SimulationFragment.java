@@ -27,7 +27,7 @@ public class SimulationFragment extends AndroidFragmentApplication {
             simulation = new Simulation();
         }
         View v = initializeForView(simulation);
-        v.setFocusable(false);
+        //v.setFocusable(false);
         return v;
     }
 
