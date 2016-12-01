@@ -38,28 +38,26 @@ import edu.calpoly.isstracker.IssData.AsyncTaskCallback;
 import edu.calpoly.isstracker.IssData.IssData;
 import edu.calpoly.isstracker.IssData.Pojos.IssPosition;
 
-public class IssMapActivity extends AppCompatActivity {
+public class IssMapActivity extends DrawerActivity {//AppCompatActivity {
 
     private GoogleMap mMap;
     private IssData issData;
 
     private Marker issMarker;
 
-    private Snackbar snackbar;
-
-    private Timer t;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_iss_map);
+        //setContentView(R.layout.activity_iss_map);
+        inflateContentAndInitNavDrawer(R.layout.activity_iss_map);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
 
-        colorToolbarBackButton(toolbar, ContextCompat.getColor(this, R.color.text_color_secondary));
+        //colorToolbarBackButton(toolbar, ContextCompat.getColor(this, R.color.text_color_secondary));
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -155,34 +153,13 @@ public class IssMapActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //refresh Iss position every 10 seconds
-        /*t = new Timer();
-        t.scheduleAtFixedRate(
-                new TimerTask() {
-                    @Override
-                    public void run() {
-                        refreshData();
-
-                    }
-                }, 0, 2 * 1000);*/
         issData.startRefreshingPosition();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        /*if (t != null) {
-            t.cancel();
-            t.purge();
-            t = null;
-        }*/
         issData.stopRefreshingPosition();
-
-        /*if (snackbar != null) {
-            snackbar.dismiss();
-        }*/
-
-        //issMarker = null;
     }
 
     @Override
@@ -200,7 +177,7 @@ public class IssMapActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    public void colorToolbarBackButton(Toolbar toolbar, int color) {
+    /*public void colorToolbarBackButton(Toolbar toolbar, int color) {
         //back button
         for (int i = 0; i < toolbar.getChildCount(); i++) {
             if (toolbar.getChildAt(i) instanceof ImageView) {
@@ -208,5 +185,5 @@ public class IssMapActivity extends AppCompatActivity {
                 drawerIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
             }
         }
-    }
+    }*/
 }

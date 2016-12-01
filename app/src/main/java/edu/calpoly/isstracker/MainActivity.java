@@ -7,16 +7,13 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.WindowManager;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 
-public class MainActivity extends BaseActivity implements AndroidFragmentApplication.Callbacks {
+public class MainActivity extends DrawerActivity implements AndroidFragmentApplication.Callbacks {
 
     private boolean tablet;
 
@@ -26,19 +23,16 @@ public class MainActivity extends BaseActivity implements AndroidFragmentApplica
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        //setContentView(R.layout.activity_main);
+        inflateContentAndInitNavDrawer(R.layout.activity_main);
 
         tablet = getResources().getBoolean(R.bool.tablet);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
-        setToolbar(toolbar);
-        //setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);*/
 
         initDataFragment();
-
-        //must be called after setToolbar(), for navDrawer
-        initLeftNavDrawer();
 
         initSimulation();
     }
@@ -78,6 +72,8 @@ public class MainActivity extends BaseActivity implements AndroidFragmentApplica
                 }
             });
         } else {
+            //View rightDrawer = LayoutInflater.from(this).inflate(R.layout.mainactivity_right_drawer_layout, getDrawerLayout(), true);
+
             transaction.replace(R.id.nav_view_right_container, fragment).commit();
 
             View bottomSheet = findViewById(R.id.bottom_sheet_container);
@@ -87,9 +83,9 @@ public class MainActivity extends BaseActivity implements AndroidFragmentApplica
         }
     }
 
-    @Override
-    public void initLeftNavDrawer() {
-        super.initLeftNavDrawer();
+    /*@Override
+    public void inflateContentAndInitNavDrawer() {
+        super.inflateContentAndInitNavDrawer();
         final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         if (!tablet) {
@@ -97,7 +93,7 @@ public class MainActivity extends BaseActivity implements AndroidFragmentApplica
             mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
                     findViewById(R.id.nav_view_right_container));
         }
-    }
+    }*/
 
     public void initSimulation() {
         Simulation simulation = (Simulation) getLastCustomNonConfigurationInstance();
@@ -108,10 +104,10 @@ public class MainActivity extends BaseActivity implements AndroidFragmentApplica
                 .commit();
     }
 
-    @Override
+    /*@Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (hasFocus && getResources().getBoolean(R.bool.landscape)) {
+        if (hasFocus && (getResources().getBoolean(R.bool.landscape) || tablet)) {
             getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_STABLE
                             | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
@@ -120,7 +116,7 @@ public class MainActivity extends BaseActivity implements AndroidFragmentApplica
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
                     | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
-    }
+    }*/
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

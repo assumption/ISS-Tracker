@@ -23,7 +23,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-public class IssStreamActivity extends AppCompatActivity {
+public class IssStreamActivity extends DrawerActivity {
 
     public static final String VIDEO_ID = "ddFvjfvPnqk";
 
@@ -32,13 +32,14 @@ public class IssStreamActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_iss_stream);
+        //setContentView(R.layout.activity_iss_stream);
+        inflateContentAndInitNavDrawer(R.layout.activity_iss_stream);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         toolbar.setTitle("");
         toolbar.setBackgroundColor(ContextCompat.getColor(this, android.R.color.transparent));
         setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
 
         YouTubePlayerSupportFragment youTubePlayerFragment = YouTubePlayerSupportFragment.newInstance();
         FragmentTransaction transaction = getSupportFragmentManager().beginTransaction();
@@ -48,7 +49,7 @@ public class IssStreamActivity extends AppCompatActivity {
             public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer player, boolean wasRestored) {
                 if (!wasRestored) {
                     IssStreamActivity.this.player = player;
-                    player.setPlayerStyle(YouTubePlayer.PlayerStyle.CHROMELESS);
+                    player.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
                     player.loadVideo(VIDEO_ID);
                     player.play();
                 }
@@ -68,7 +69,7 @@ public class IssStreamActivity extends AppCompatActivity {
                 ContextCompat.getColor(this, R.color.text_color_secondary));
     }
 
-    @Override
+    /*@Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
         if (hasFocus && getResources().getBoolean(R.bool.landscape)) {
@@ -80,7 +81,7 @@ public class IssStreamActivity extends AppCompatActivity {
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
                     | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
         }
-    }
+    }*/
 
     @Override
     protected void onResume() {
@@ -127,7 +128,7 @@ public class IssStreamActivity extends AppCompatActivity {
     public void showInfoDialog() {
         String message = "Video is streamed from:\nhttps://www.youtube.com/watch?v=" + VIDEO_ID;
 
-        AlertDialog dialog = new AlertDialog.Builder(this, R.style.Theme_AppCompat_Dialog_Alert_dark)
+        AlertDialog dialog = new AlertDialog.Builder(this) //, R.style.Theme_AppCompat_Dialog_Alert_dark
                 .setTitle(getString(R.string.iss_live_stream_info))
                 .setMessage(message)
                 .setOnDismissListener(new DialogInterface.OnDismissListener() {

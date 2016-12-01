@@ -5,8 +5,9 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="android:windowTranslucentStatus">true</item>
+        <!--<item name="android:statusBarColor">@android:color/transparent</item>-->
         <item name="android:windowTranslucentNavigation">true</item>
-        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
+        <!--<item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
 
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
         <item name="android:windowDisablePreview">true</item>
@@ -23,11 +24,5 @@
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
         <item name="color">@color/text_color_secondary</item>
-    </style>
-
-    <style name="Theme.AppCompat.Dialog.Alert.dark" parent="Theme.AppCompat.Dialog.Alert">
-        <item name="android:textColorPrimary">@color/text_color_primary</item>
-        <item name="android:colorBackground">@color/grey_900</item>
-        <item name="colorAccent">@color/colorAccent</item>
     </style>
 </resources>

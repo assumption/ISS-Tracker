@@ -23,11 +23,11 @@
 
         <activity
             android:name="edu.calpoly.isstracker.IssStreamActivity"
-            android:theme="@style/AppTheme.IssStream" />
+            android:theme="@style/AppTheme.IssStream"/>
 
         <activity
             android:name="edu.calpoly.isstracker.IssMapActivity"
-            android:theme="@style/AppTheme.IssMap" />
+            android:theme="@style/AppTheme.IssMap"/>
 
         <activity
             android:name="edu.calpoly.isstracker.SimulationVR"

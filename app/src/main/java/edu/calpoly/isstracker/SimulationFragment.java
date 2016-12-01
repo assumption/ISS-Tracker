@@ -8,22 +8,6 @@ import android.view.ViewGroup;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.BufferedInputStream;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
-
-import edu.calpoly.isstracker.IssData.ISSMath;
 
 public class SimulationFragment extends AndroidFragmentApplication {
 
@@ -42,7 +26,9 @@ public class SimulationFragment extends AndroidFragmentApplication {
         if(simulation == null){
             simulation = new Simulation();
         }
-        return initializeForView(simulation);
+        View v = initializeForView(simulation);
+        v.setFocusable(false);
+        return v;
     }
 
     public Simulation getSimulation(){
