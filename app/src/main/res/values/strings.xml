@@ -11,4 +11,9 @@
     <string name="drawer_close">Drawer Close</string>
     <string name="iss_live_stream_info">Info</string>
     <string name="cardboard">Cardboard View</string>
+    <string name="alexander_chamberlain">Alexander Chamberlain</string>
+    <string name="lukas_koller">Lukas Koller</string>
+    <string name="authors">Authors</string>
+    <string name="libraries">Libraries</string>
+    <string name="about">About</string>
 </resources>

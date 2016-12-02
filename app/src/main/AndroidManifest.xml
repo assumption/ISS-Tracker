@@ -14,7 +14,7 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/api_key" />
 
-        <activity android:name="edu.calpoly.isstracker.MainActivity">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -22,15 +22,18 @@
         </activity>
 
         <activity
-            android:name="edu.calpoly.isstracker.IssStreamActivity"
+            android:name=".IssStreamActivity"
             android:theme="@style/AppTheme.IssStream"/>
 
         <activity
-            android:name="edu.calpoly.isstracker.IssMapActivity"
+            android:name=".IssMapActivity"
             android:theme="@style/AppTheme.IssMap"/>
 
         <activity
-            android:name="edu.calpoly.isstracker.SimulationVR"
+            android:name=".SimulationVR"
             android:screenOrientation="landscape"/>
+
+        <activity android:name=".AboutActivity"
+                  android:label="@string/about"/>
     </application>
 </manifest>

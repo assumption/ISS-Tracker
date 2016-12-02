@@ -10,7 +10,7 @@
         <!--<item name="android:windowDrawsSystemBarBackgrounds">true</item>-->
 
         <item name="drawerArrowStyle">@style/DrawerArrowStyle</item>
-        <item name="android:windowDisablePreview">true</item>
+        <item name="android:windowDisablePreview">false</item>
     </style>
 
     <style name="AppTheme.IssStream" parent="AppTheme">
@@ -21,8 +21,27 @@
         <item name="android:windowTranslucentNavigation">true</item>
     </style>
 
+    <style name="AppTheme.AboutActivity" parent="AppTheme">
+
+    </style>
+
     <style name="DrawerArrowStyle" parent="Widget.AppCompat.DrawerArrowToggle">
         <item name="spinBars">true</item>
         <item name="color">@color/text_color_secondary</item>
+    </style>
+
+    <style name="AppTheme.AboutActivity.TextViewStyle">
+        <item name="android:textSize">18sp</item>
+        <item name="android:padding">16dp</item>
+        <item name="android:textColor">@color/text_color_secondary</item>
+        <item name="android:foreground">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:clickable">true</item>
+    </style>
+
+    <style name="AppTheme.AboutActivity.TextViewStyle.Headline">
+        <item name="android:textSize">20sp</item>
+        <item name="android:fontFamily">sans-serif-medium</item>
+        <item name="android:textColor">@color/text_color_primary</item>
+        <item name="android:clickable">false</item>
     </style>
 </resources>

@@ -2,6 +2,7 @@ package edu.calpoly.isstracker;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.internal.NavigationMenuView;
@@ -16,7 +17,6 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.load.engine.DiskCacheStrategy;
@@ -38,9 +38,14 @@ public abstract class DrawerActivity extends AppCompatActivity {
     }
 
     @Override
-    protected void onResume() {
+    protected void onPostResume() {
         super.onResume();
-        getDrawerLayout().closeDrawers();
+        new Handler().postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                getDrawerLayout().closeDrawers();
+            }
+        }, 100);
     }
 
     public void inflateContentAndInitNavDrawer(int layoutId) {
@@ -129,9 +134,8 @@ public abstract class DrawerActivity extends AppCompatActivity {
                                 }
                                 break;
                             case R.id.about:
-                                Toast.makeText(DrawerActivity.this,
-                                        getString(R.string.about_nav_drawer),
-                                        Toast.LENGTH_SHORT).show();
+                                startActivity(new Intent(DrawerActivity.this, AboutActivity.class));
+                                getDrawerLayout().closeDrawers();
                                 break;
                         }
                         return true;
@@ -140,6 +144,7 @@ public abstract class DrawerActivity extends AppCompatActivity {
 
         if (getIntent().getBooleanExtra(DRAWER_OPEN, false)) {
             mDrawerLayout.openDrawer(mNavigationView);
+            getIntent().putExtra(DRAWER_OPEN, false);
         }
 
         if (layoutId == R.layout.activity_main && getResources().getBoolean(R.bool.phone)) {
