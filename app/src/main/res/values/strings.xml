@@ -16,4 +16,10 @@
     <string name="authors">Authors</string>
     <string name="libraries">Libraries</string>
     <string name="about">About</string>
+    <string name="glide">Glide</string>
+    <string name="google_play_servcie_attribution">Google Play Servcie Attribution</string>
+    <string name="retrofit">Retrofit</string>
+    <string name="libgdx">Libgdx</string>
+    <string name="libgdx_cardBoard_extension">Libgdx-CardBoard-Extension</string>
+    <string name="open_iss_data_drawer">Open Iss Data Drawer</string>
 </resources>

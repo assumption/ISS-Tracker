@@ -7,6 +7,8 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.assets.loaders.ModelLoader;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
@@ -20,9 +22,15 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.attributes.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.IntAttribute;
 import com.badlogic.gdx.graphics.g3d.attributes.TextureAttribute;
+import com.badlogic.gdx.graphics.g3d.loader.G3dModelLoader;
+import com.badlogic.gdx.graphics.g3d.loader.ObjLoader;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.input.GestureDetector;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.BaseJsonReader;
+import com.badlogic.gdx.utils.JsonValue;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -44,8 +52,9 @@ import edu.calpoly.isstracker.IssData.ISSMath;
 import edu.calpoly.isstracker.IssData.IssData;
 import edu.calpoly.isstracker.IssData.Pojos.IssPosition;
 
-class Simulation extends ApplicationAdapter implements InputProcessor {
+class Simulation extends ApplicationAdapter implements /*GestureDetector.GestureListener*/InputProcessor {
 
+    private static final String TAG = "SIMULATION";
     private PerspectiveCamera cam;
     private Model earthModel;
     private Model skyboxModel;
@@ -76,18 +85,20 @@ class Simulation extends ApplicationAdapter implements InputProcessor {
     @Override
     public void create() {
         Gdx.input.setInputProcessor(this);
+        //Gdx.input.setInputProcessor(new GestureDetector(this));
 
         issPosition = new Vector3();
 
         cam = new PerspectiveCamera(75f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         cam.near = Z_NEAR;
         cam.far = Z_FAR;
-        cam.position.set(0f, 0f, ISSMath.EARTH_R * 1.7f);
+        cam.position.set(0f, 0f, ISSMath.EARTH_R * 3.5f);
         cam.lookAt(0f, 0f, 0f);
 
         AssetManager assetManager = new AssetManager();
         assetManager.load("earth.jpg", Texture.class);
         assetManager.load("stars.jpg", Texture.class);
+        /*assetManager.load("issmodel.g3db", Model.class);*/
         assetManager.finishLoading();
 
         Texture earthTexture = assetManager.get("earth.jpg", Texture.class);
@@ -107,19 +118,24 @@ class Simulation extends ApplicationAdapter implements InputProcessor {
         earthInstance = new ModelInstance(earthModel);
 
         modelBuilder = new ModelBuilder();
-        skyboxModel = modelBuilder.createSphere(ISSMath.EARTH_R * 4, ISSMath.EARTH_R * 4,
-                ISSMath.EARTH_R * 4, 32, 32,
+        skyboxModel = modelBuilder.createSphere(ISSMath.EARTH_R * 10, ISSMath.EARTH_R * 10,
+                ISSMath.EARTH_R * 10, 32, 32,
                 new Material(skyboxMaterial),
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal | VertexAttributes.Usage.TextureCoordinates);
         skyboxInstance = new ModelInstance(skyboxModel);
         skyboxInstance.materials.get(0).set(new IntAttribute(IntAttribute.CullFace, 0));
 
         modelBuilder = new ModelBuilder();
-        issModel = modelBuilder.createSphere(ISSMath.EARTH_R / 10, ISSMath.EARTH_R / 10,
-                ISSMath.EARTH_R / 10, 32, 32,
+        issModel = modelBuilder.createSphere(ISSMath.EARTH_R / 20, ISSMath.EARTH_R / 20,
+                ISSMath.EARTH_R / 30, 32, 32,
                 new Material(ColorAttribute.createDiffuse(Color.RED)),
                 VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
         issInstance = new ModelInstance(issModel);
+
+        /*issModel = assetManager.get("issmodel.g3db", Model.class);*/
+        /*ModelLoader loader = new ObjLoader();
+        issModel = loader.loadModel(Gdx.files.internal("assets/iss.obj"));
+        issInstance = new ModelInstance(issModel);*/
 
         Array<ModelInstance> instances = new Array<>();
         instances.add(earthInstance);
@@ -250,7 +266,6 @@ class Simulation extends ApplicationAdapter implements InputProcessor {
     }
 
     public void onStop(){
-        Log.d("SIMULATION", "onStop() called");
         issData.stopRefreshingPosition();
     }
 
@@ -310,4 +325,63 @@ class Simulation extends ApplicationAdapter implements InputProcessor {
     public boolean scrolled(int amount) {
         return false;
     }
+
+    public void onSlide(float slideOffset){
+        //scale and move simulation upwards
+    }
+
+    //I tried myself on gestures :)
+    /*@Override
+    public boolean touchDown(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean tap(float x, float y, int count, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean longPress(float x, float y) {
+        return false;
+    }
+
+    @Override
+    public boolean fling(float velocityX, float velocityY, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean pan(float x, float y, float deltaX, float deltaY) {
+        camAxis.rotate(yAxis, -deltaX / 8);
+        cam.rotateAround(origin, yAxis, -deltaX / 8);
+        cam.rotateAround(origin, camAxis, -deltaY / 8);
+        return false;
+    }
+
+    @Override
+    public boolean panStop(float x, float y, int pointer, int button) {
+        return false;
+    }
+
+    @Override
+    public boolean zoom(float initialDistance, float distance) {
+        Vector3 currentCamPos = cam.position.cpy();
+        Log.d(TAG, "currentCamPos: " + currentCamPos);
+        float delta =  initialDistance - distance;
+        Vector3 translatedCamPos = currentCamPos.add(currentCamPos.scl(delta/30000));
+        Log.d(TAG, "translatedCamPos: " + translatedCamPos);
+        *//*if(translatedCamPos.len2() > ISSMath.EARTH_R * 5 ){
+            translatedCamPos = translatedCamPos.setLength(ISSMath.EARTH_R * 5);
+        } else if(translatedCamPos.len2() < ISSMath.EARTH_R){
+            translatedCamPos = translatedCamPos.setLength(ISSMath.EARTH_R);
+        }*//*
+        cam.translate(translatedCamPos);
+        return true;
+    }
+
+    @Override
+    public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
+        return false;
+    }*/
 }

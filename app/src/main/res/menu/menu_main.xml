@@ -7,4 +7,10 @@
           android:icon="@drawable/google_cardboard"
           app:showAsAction="always"
           android:visible="@bool/phone"/>
+
+    <item android:id="@+id/open_right_drawer"
+          android:title="@string/open_iss_data_drawer"
+          android:icon="@drawable/ic_chevron_left_white_24dp"
+          app:showAsAction="always"
+          android:visible="@bool/tablet"/>
 </menu>

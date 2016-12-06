@@ -25,6 +25,8 @@ public class IssDataFragment extends Fragment {
     private CardView header;
     private RecyclerView recyclerView;
 
+    private BottomSheetCallback callback;
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         boolean tablet = getResources().getBoolean(R.bool.tablet);
@@ -35,6 +37,18 @@ public class IssDataFragment extends Fragment {
 
         View v = inflater.inflate(R.layout.iss_data_sheet_fragment, container, false);
         header = (CardView) v.findViewById(R.id.header);
+        if(!getResources().getBoolean(R.bool.tablet)){
+            header.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(callback != null){
+                        callback.onClick();
+                    }
+                }
+            });
+        } else {
+            header.findViewById(R.id.button).setVisibility(View.GONE);
+        }
 
         IssData issData = new IssData();
         issData.retrieveAstronauts(new AsyncTaskCallback() {
@@ -67,6 +81,10 @@ public class IssDataFragment extends Fragment {
                 Color.green(header_color), Color.blue(header_color)));
         header.setCardElevation(slideOffset * getResources().getDimension(R.dimen.toolbar_elevation));
 
+        if(!getResources().getBoolean(R.bool.tablet)){
+            header.findViewById(R.id.button).setRotation(slideOffset*180);
+        }
+
         //fade in text
         recyclerView.setAlpha(slideOffset);
     }
@@ -75,6 +93,10 @@ public class IssDataFragment extends Fragment {
         RecyclerViewAdapter adapter = (RecyclerViewAdapter) recyclerView.getAdapter();
         adapter.items = issData.getDataListItems();
         adapter.notifyDataSetChanged();
+    }
+
+    public void setCallback(BottomSheetCallback callback){
+        this.callback = callback;
     }
 
     public static class RecyclerViewAdapter extends RecyclerView.Adapter {
@@ -159,5 +181,9 @@ public class IssDataFragment extends Fragment {
                 this.isAstronaut = data.isAstronaut;
             }
         }
+    }
+
+    public interface BottomSheetCallback {
+        void onClick();
     }
 }

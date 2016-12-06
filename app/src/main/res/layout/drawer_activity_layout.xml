@@ -6,8 +6,14 @@
         android:id="@+id/drawer_layout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:focusable="true"
         tools:context="edu.calpoly.isstracker.MainActivity">
+
+    <FrameLayout
+            android:id="@+id/nav_view_right_container"
+            android:layout_width="350dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:saveEnabled="false"/>
 
     <android.support.design.widget.NavigationView
             android:id="@+id/nav_view_left"
@@ -20,10 +26,4 @@
             app:itemIconTint="@color/text_color_secondary"
             app:itemTextColor="@color/text_color_secondary"
             app:menu="@menu/nav_drawer"/>
-
-    <FrameLayout
-            android:id="@+id/nav_view_right_container"
-            android:layout_width="350dp"
-            android:layout_height="match_parent"
-            android:layout_gravity="end"/>
 </android.support.v4.widget.DrawerLayout>

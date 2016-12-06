@@ -3,21 +3,21 @@
 
     <group android:id="@+id/items"
            android:checkableBehavior="single">
-        <item android:id="@+id/home"
+        <item android:id="@+id/home_activity"
               android:title="@string/home_nav_drawer"
               android:icon="@drawable/ic_public_black_24dp"
               android:checked="true"/>
 
-        <item android:id="@+id/map"
+        <item android:id="@+id/map_activity"
               android:title="@string/map_nav_drawer"
               android:icon="@drawable/ic_map_black_24dp"/>
 
-        <item android:id="@+id/stream"
+        <item android:id="@+id/stream_activity"
               android:title="@string/stream_nav_drawer"
               android:icon="@drawable/ic_play_circle_filled_black_24dp"/>
     </group>
 
-    <item android:id="@+id/about"
+    <item android:id="@+id/about_activity"
           android:title="@string/about_nav_drawer"
           android:icon="@drawable/ic_info_black_24dp"/>
 </menu>

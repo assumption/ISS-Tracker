@@ -6,7 +6,8 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:background="@color/grey_900"
-        android:saveEnabled="false">
+        android:saveEnabled="false"
+        android:fitsSystemWindows="true">
 
     <android.support.v7.widget.CardView
             android:id="@+id/header"
@@ -26,6 +27,15 @@
                 android:textSize="20sp"
                 android:layout_gravity="center_vertical"/>
 
+        <ImageView
+                android:id="@+id/button"
+                android:layout_width="25dp"
+                android:layout_height="25dp"
+                android:src="@drawable/ic_expand_less_white_24dp"
+                android:background="@drawable/round_ripple_bg"
+                android:alpha="0.54"
+                android:layout_gravity="end|center_vertical"
+                android:layout_margin="16dp"/>
     </android.support.v7.widget.CardView>
 
     <android.support.v7.widget.RecyclerView

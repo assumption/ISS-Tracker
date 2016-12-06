@@ -4,8 +4,10 @@
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FFEA00</color>
 
+    <color name="white">#FFFFFF</color>
     <color name="text_color_primary">#deFFFFFF</color>
     <color name="text_color_secondary">#89FFFFFF</color>
+    <color name="ripple_color">#89FFFFFF</color>
     <color name="a_bit_lighter_than_grey_900">#303030</color>
     <color name="grey_900">#212121</color>
     <color name="a_bit_darker_than_grey_900">#151515</color>

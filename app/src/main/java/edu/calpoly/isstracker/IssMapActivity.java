@@ -14,31 +14,20 @@ import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.graphics.Typeface;
-import android.graphics.drawable.shapes.RoundRectShape;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
 
 import edu.calpoly.isstracker.IssData.AsyncTaskCallback;
 import edu.calpoly.isstracker.IssData.IssData;
 import edu.calpoly.isstracker.IssData.Pojos.IssPosition;
 
-public class IssMapActivity extends DrawerActivity {//AppCompatActivity {
+public class IssMapActivity extends DrawerActivity {
 
     private GoogleMap mMap;
     private IssData issData;
@@ -48,26 +37,16 @@ public class IssMapActivity extends DrawerActivity {//AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_iss_map);
         inflateContentAndInitNavDrawer(R.layout.activity_iss_map);
 
-
-        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);*/
-
-        //colorToolbarBackButton(toolbar, ContextCompat.getColor(this, R.color.text_color_secondary));
-
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
+        final SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(new OnMapReadyCallback() {
             @Override
             public void onMapReady(GoogleMap googleMap) {
                 mMap = googleMap;
                 //for the info window
                 mMap.setInfoWindowAdapter(new GoogleMap.InfoWindowAdapter() {
-
                     @Override
                     public View getInfoWindow(Marker arg0) {
                         return null;
@@ -154,6 +133,7 @@ public class IssMapActivity extends DrawerActivity {//AppCompatActivity {
     protected void onResume() {
         super.onResume();
         issData.startRefreshingPosition();
+        getNavigationView().setCheckedItem(R.id.map_activity);
     }
 
     @Override
@@ -161,29 +141,4 @@ public class IssMapActivity extends DrawerActivity {//AppCompatActivity {
         super.onPause();
         issData.stopRefreshingPosition();
     }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            // Respond to the action bar's Up/Home button
-            case android.R.id.home:
-                try {
-                    onBackPressed();
-                } catch (NullPointerException e) {
-                    e.printStackTrace();
-                }
-                return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    /*public void colorToolbarBackButton(Toolbar toolbar, int color) {
-        //back button
-        for (int i = 0; i < toolbar.getChildCount(); i++) {
-            if (toolbar.getChildAt(i) instanceof ImageView) {
-                ImageView drawerIcon = (ImageView) toolbar.getChildAt(i);
-                drawerIcon.setColorFilter(color, PorterDuff.Mode.SRC_IN);
-            }
-        }
-    }*/
 }

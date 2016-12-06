@@ -121,17 +121,25 @@
                                 style="@style/AppTheme.AboutActivity.TextViewStyle.Headline"/>
                     </LinearLayout>
 
-                    <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Library 1"
-                            style="@style/AppTheme.AboutActivity.TextViewStyle"/>
+                    <include
+                            android:id="@+id/license_item_1"
+                            layout="@layout/license_item"/>
 
-                    <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="Library 2"
-                            style="@style/AppTheme.AboutActivity.TextViewStyle"/>
+                    <include
+                            android:id="@+id/license_item_2"
+                            layout="@layout/license_item"/>
+
+                    <include
+                            android:id="@+id/license_item_3"
+                            layout="@layout/license_item"/>
+
+                    <include
+                            android:id="@+id/license_item_4"
+                            layout="@layout/license_item"/>
+
+                    <include
+                            android:id="@+id/license_item_5"
+                            layout="@layout/license_item"/>
                 </LinearLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>

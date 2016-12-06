@@ -7,9 +7,11 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomSheetBehavior;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.GravityCompat;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 
 import com.badlogic.gdx.backends.android.AndroidFragmentApplication;
 
@@ -23,18 +25,15 @@ public class MainActivity extends DrawerActivity implements AndroidFragmentAppli
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        //setContentView(R.layout.activity_main);
-        inflateContentAndInitNavDrawer(R.layout.activity_main);
+        inflateContent(R.layout.activity_main);
 
         tablet = getResources().getBoolean(R.bool.tablet);
 
-        /*Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("");
-        setSupportActionBar(toolbar);*/
+        initSimulation();
 
         initDataFragment();
 
-        initSimulation();
+        initNavDrawer();
     }
 
     public void initDataFragment() {
@@ -64,16 +63,21 @@ public class MainActivity extends DrawerActivity implements AndroidFragmentAppli
                 public void onSlide(@NonNull View bottomSheet, float slideOffset) {
                     //animate bottom sheet
                     fragment.onSlide(slideOffset);
-
                     //scale and move simulation upwards
-                    /*simulation.setTranslationY(-slideOffset * simulation.getTop() * 0.7f);
-                    simulation.setScaleX(1.0f - 0.3f * slideOffset);
-                    simulation.setScaleY(1.0f - 0.3f * slideOffset);*/
+                    simFragment.getSimulation().onSlide(slideOffset);
                 }
             });
-        } else {
-            //View rightDrawer = LayoutInflater.from(this).inflate(R.layout.mainactivity_right_drawer_layout, getDrawerLayout(), true);
 
+            fragment.setCallback(new IssDataFragment.BottomSheetCallback() {
+                @Override
+                public void onClick() {
+                    behavior.setState(behavior.getState() == BottomSheetBehavior.STATE_COLLAPSED ?
+                            BottomSheetBehavior.STATE_EXPANDED : BottomSheetBehavior.STATE_COLLAPSED);
+                }
+            });
+
+            lockRightDrawer();
+        } else {
             transaction.replace(R.id.nav_view_right_container, fragment).commit();
 
             View bottomSheet = findViewById(R.id.bottom_sheet_container);
@@ -82,18 +86,6 @@ public class MainActivity extends DrawerActivity implements AndroidFragmentAppli
             behavior.setState(BottomSheetBehavior.STATE_COLLAPSED);
         }
     }
-
-    /*@Override
-    public void inflateContentAndInitNavDrawer() {
-        super.inflateContentAndInitNavDrawer();
-        final DrawerLayout mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-
-        if (!tablet) {
-            //lock right drawer if device is a phone
-            mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
-                    findViewById(R.id.nav_view_right_container));
-        }
-    }*/
 
     public void initSimulation() {
         Simulation simulation = (Simulation) getLastCustomNonConfigurationInstance();
@@ -104,32 +96,18 @@ public class MainActivity extends DrawerActivity implements AndroidFragmentAppli
                 .commit();
     }
 
-    /*@Override
-    public void onWindowFocusChanged(boolean hasFocus) {
-        super.onWindowFocusChanged(hasFocus);
-        if (hasFocus && (getResources().getBoolean(R.bool.landscape) || tablet)) {
-            getWindow().getDecorView().setSystemUiVisibility(
-                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
-                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN
-                    | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        }
-    }*/
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getNavigationView().setCheckedItem(R.id.home_activity);
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_main, menu);
-        //color info icon
-        menu.getItem(0).getIcon().setColorFilter(ContextCompat.getColor(this, R.color.text_color_secondary), PorterDuff.Mode.SRC_IN);
-        menu.getItem(0).setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
-            @Override
-            public boolean onMenuItemClick(MenuItem menuItem) {
-                startActivity(new Intent(MainActivity.this, SimulationVR.class));
-                return false;
-            }
-        });
+        //color cardboard icon
+        menu.getItem(0).getIcon().setColorFilter(ContextCompat.getColor(this,
+                R.color.text_color_secondary), PorterDuff.Mode.SRC_IN);
         return true;
     }
 
@@ -137,6 +115,11 @@ public class MainActivity extends DrawerActivity implements AndroidFragmentAppli
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.cardboard:
+                startActivity(new Intent(MainActivity.this,
+                        SimulationVR.class));
+                break;
+            case R.id.open_right_drawer:
+                getDrawerLayout().openDrawer(GravityCompat.END);
                 break;
         }
         return super.onOptionsItemSelected(item);

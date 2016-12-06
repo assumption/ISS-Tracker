@@ -62,7 +62,7 @@ public class SimulationVR extends CardBoardAndroidApplication implements CardBoa
     private Environment environment;
     private static final float Z_NEAR = 0.1f;
     private static final float Z_FAR = 10000.0f;
-    private static final long REQUEST_INTERVAL = 2000;
+    /*private static final long REQUEST_INTERVAL = 2000;*/
 
     private Vector3 issPosition;
     private DirectionalLight light;
