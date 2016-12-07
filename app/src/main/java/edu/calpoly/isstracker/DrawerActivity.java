@@ -1,6 +1,10 @@
 package edu.calpoly.isstracker;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -8,6 +12,7 @@ import android.support.design.internal.NavigationMenuView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
@@ -48,6 +53,20 @@ public abstract class DrawerActivity extends AppCompatActivity {
                         }
                     });
             getIntent().putExtra(OPEN_DRAWER, false);
+        }
+
+        if(!isNetworkAvailable()){
+            new AlertDialog.Builder(this)
+                    .setTitle("No Network Connection")
+                    .setMessage("ISS Tracker is unable to refresh the ISS position.")
+                    .setPositiveButton("OK", null)
+                    .setNegativeButton("Close App", new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            DrawerActivity.this.onBackPressed();
+                        }
+                    })
+                    .create().show();
         }
     }
 
@@ -94,19 +113,19 @@ public abstract class DrawerActivity extends AppCompatActivity {
                             case R.id.home_activity:
                                 startActivity(new Intent(DrawerActivity.this, MainActivity.class)
                                         .putExtra(OPEN_DRAWER, true)
-                                        .setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
+                                        .setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 overridePendingTransition(0, 0);
                                 break;
                             case R.id.map_activity:
                                 startActivity(new Intent(DrawerActivity.this, IssMapActivity.class)
                                         .putExtra(OPEN_DRAWER, true)
-                                        .setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
+                                        .setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 overridePendingTransition(0, 0);
                                 break;
                             case R.id.stream_activity:
                                 startActivity(new Intent(DrawerActivity.this, IssStreamActivity.class)
                                         .putExtra(OPEN_DRAWER, true)
-                                        .setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT));
+                                        .setFlags(Intent.FLAG_ACTIVITY_REORDER_TO_FRONT | Intent.FLAG_ACTIVITY_CLEAR_TOP));
                                 overridePendingTransition(0, 0);
                                 break;
                             case R.id.about_activity:
@@ -130,6 +149,13 @@ public abstract class DrawerActivity extends AppCompatActivity {
     public void lockRightDrawer(){
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED,
                 findViewById(R.id.nav_view_right_container));
+    }
+
+    private boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
     public void inflateContentAndInitNavDrawer(int layoutId) {
