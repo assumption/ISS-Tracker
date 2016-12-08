@@ -33,7 +33,7 @@
                     android:layout_width="100dp"
                     android:layout_height="100dp"
                     android:layout_gravity="center_horizontal"
-                    android:src="@drawable/icon"
+                    android:src="@drawable/ic_launcher"
                     android:padding="8dp"/>
 
             <TextView

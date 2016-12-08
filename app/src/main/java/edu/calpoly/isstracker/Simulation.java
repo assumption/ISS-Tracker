@@ -52,7 +52,7 @@ import edu.calpoly.isstracker.IssData.ISSMath;
 import edu.calpoly.isstracker.IssData.IssData;
 import edu.calpoly.isstracker.IssData.Pojos.IssPosition;
 
-class Simulation extends ApplicationAdapter implements /*GestureDetector.GestureListener*/InputProcessor {
+class Simulation extends ApplicationAdapter implements GestureDetector.GestureListener, InputProcessor {
 
     private static final String TAG = "SIMULATION";
     private PerspectiveCamera cam;
@@ -85,7 +85,7 @@ class Simulation extends ApplicationAdapter implements /*GestureDetector.Gesture
     @Override
     public void create() {
         Gdx.input.setInputProcessor(this);
-        //Gdx.input.setInputProcessor(new GestureDetector(this));
+        Gdx.input.setInputProcessor(new GestureDetector(this));
 
         issPosition = new Vector3();
 
@@ -331,7 +331,7 @@ class Simulation extends ApplicationAdapter implements /*GestureDetector.Gesture
     }
 
     //I tried myself on gestures :)
-    /*@Override
+    @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
         return false;
     }
@@ -353,9 +353,11 @@ class Simulation extends ApplicationAdapter implements /*GestureDetector.Gesture
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        camAxis.rotate(yAxis, -deltaX / 8);
-        cam.rotateAround(origin, yAxis, -deltaX / 8);
-        cam.rotateAround(origin, camAxis, -deltaY / 8);
+        float dampening = 8 * (ISSMath.EARTH_R * 3.5f / cam.position.len());
+
+        camAxis.rotate(yAxis, -deltaX / dampening);
+        cam.rotateAround(origin, yAxis, -deltaX / dampening);
+        cam.rotateAround(origin, camAxis, -deltaY / dampening);
         return false;
     }
 
@@ -366,22 +368,18 @@ class Simulation extends ApplicationAdapter implements /*GestureDetector.Gesture
 
     @Override
     public boolean zoom(float initialDistance, float distance) {
-        Vector3 currentCamPos = cam.position.cpy();
-        Log.d(TAG, "currentCamPos: " + currentCamPos);
-        float delta =  initialDistance - distance;
-        Vector3 translatedCamPos = currentCamPos.add(currentCamPos.scl(delta/30000));
-        Log.d(TAG, "translatedCamPos: " + translatedCamPos);
-        *//*if(translatedCamPos.len2() > ISSMath.EARTH_R * 5 ){
-            translatedCamPos = translatedCamPos.setLength(ISSMath.EARTH_R * 5);
-        } else if(translatedCamPos.len2() < ISSMath.EARTH_R){
-            translatedCamPos = translatedCamPos.setLength(ISSMath.EARTH_R);
-        }*//*
-        cam.translate(translatedCamPos);
+        float delta =  (initialDistance - distance) / 32;
+        float camLen = cam.position.len() + delta;
+
+        if (camLen < ISSMath.EARTH_R * 4.9 && camLen > ISSMath.EARTH_R * 1.1) {
+            cam.position.setLength(camLen);
+        }
+
         return true;
     }
 
     @Override
     public boolean pinch(Vector2 initialPointer1, Vector2 initialPointer2, Vector2 pointer1, Vector2 pointer2) {
         return false;
-    }*/
+    }
 }
