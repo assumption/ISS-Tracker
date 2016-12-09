@@ -52,7 +52,7 @@ import edu.calpoly.isstracker.IssData.ISSMath;
 import edu.calpoly.isstracker.IssData.IssData;
 import edu.calpoly.isstracker.IssData.Pojos.IssPosition;
 
-class Simulation extends ApplicationAdapter implements GestureDetector.GestureListener, InputProcessor {
+class Simulation extends ApplicationAdapter implements GestureDetector.GestureListener {
 
     private static final String TAG = "SIMULATION";
     private PerspectiveCamera cam;
@@ -68,23 +68,17 @@ class Simulation extends ApplicationAdapter implements GestureDetector.GestureLi
     private static final float Z_FAR = ISSMath.EARTH_R * 10;
 
     private Vector3 origin = new Vector3(0f, 0f, 0f);
-    private Vector3 yAxis = new Vector3(0f, 1f, 0f);
-    private Vector3 camAxis = new Vector3(1f, 0f, 0f);
-    private int lastX = 0;
-    private int lastY = 0;
+    private Vector3 camX = new Vector3(1f, 0f, 0f);
+    private Vector3 camY = new Vector3(0f, 1f, 0f);
+    private float lastInitialDist = -1;
+    private float lastDist = -1;
 
     private Vector3 issPosition;
 
-    //private ScheduledExecutorService ses;
-    //private Runnable issApiRequest;
-
-    //private static final long REQUEST_INTERVAL = 2000;
-    //private static final String API_URL = "https://api.wheretheiss.at/v1/satellites/25544";
     private IssData issData;
 
     @Override
     public void create() {
-        Gdx.input.setInputProcessor(this);
         Gdx.input.setInputProcessor(new GestureDetector(this));
 
         issPosition = new Vector3();
@@ -98,7 +92,7 @@ class Simulation extends ApplicationAdapter implements GestureDetector.GestureLi
         AssetManager assetManager = new AssetManager();
         assetManager.load("earth.jpg", Texture.class);
         assetManager.load("stars.jpg", Texture.class);
-        /*assetManager.load("issmodel.g3db", Model.class);*/
+        assetManager.load("issmodel.g3db", Model.class);
         assetManager.finishLoading();
 
         Texture earthTexture = assetManager.get("earth.jpg", Texture.class);
@@ -125,17 +119,8 @@ class Simulation extends ApplicationAdapter implements GestureDetector.GestureLi
         skyboxInstance = new ModelInstance(skyboxModel);
         skyboxInstance.materials.get(0).set(new IntAttribute(IntAttribute.CullFace, 0));
 
-        modelBuilder = new ModelBuilder();
-        issModel = modelBuilder.createSphere(ISSMath.EARTH_R / 20, ISSMath.EARTH_R / 20,
-                ISSMath.EARTH_R / 30, 32, 32,
-                new Material(ColorAttribute.createDiffuse(Color.RED)),
-                VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal);
+        issModel = assetManager.get("issmodel.g3db", Model.class);
         issInstance = new ModelInstance(issModel);
-
-        /*issModel = assetManager.get("issmodel.g3db", Model.class);*/
-        /*ModelLoader loader = new ObjLoader();
-        issModel = loader.loadModel(Gdx.files.internal("assets/iss.obj"));
-        issInstance = new ModelInstance(issModel);*/
 
         Array<ModelInstance> instances = new Array<>();
         instances.add(earthInstance);
@@ -151,72 +136,9 @@ class Simulation extends ApplicationAdapter implements GestureDetector.GestureLi
         issData = new IssData();
         listenToIssPosition();
         issData.startRefreshingPosition();
-
-        //initIssApiRequest();
     }
 
-    /*public void initIssApiRequest() {
-        issApiRequest = new Runnable() {
-            @Override
-            public void run() {
-                URL url = null;
-                try {
-                    url = new URL(API_URL);
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-                HttpURLConnection urlConnection = null;
-                try {
-                    urlConnection = (HttpURLConnection) url.openConnection();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                try {
-                    InputStream in = new BufferedInputStream(urlConnection.getInputStream());
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                    StringBuilder sb = new StringBuilder();
-
-                    String line = null;
-                    while ((line = reader.readLine()) != null) {
-                        sb.append(line + "\n");
-                    }
-                    String result = sb.toString();
-
-                    JSONObject json = new JSONObject(result);
-
-                    float latitude = 0;
-                    float longitude = 0;
-                    float altitude = 0;
-                    try {
-                        latitude = Float.valueOf(json.getString("latitude"));
-                        longitude = Float.valueOf(json.getString("longitude"));
-                        altitude = Float.valueOf(json.getString("altitude"));
-
-                        issPosition.x = latitude;
-                        issPosition.y = longitude;
-                        issPosition.z = altitude;
-
-                        ISSMath.convertToXyz(issPosition);
-                        updateIssPosition();
-
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } finally {
-                    urlConnection.disconnect();
-                }
-            }
-        };
-
-        ses = Executors.newSingleThreadScheduledExecutor();
-        ses.scheduleAtFixedRate(issApiRequest, 0, REQUEST_INTERVAL, TimeUnit.MILLISECONDS);
-    }*/
-
-    private void listenToIssPosition(){
+    private void listenToIssPosition() {
         issData.listenToPositionRefreshing(new AsyncTaskCallback() {
             @Override
             public void done(IssData issData) {
@@ -236,7 +158,7 @@ class Simulation extends ApplicationAdapter implements GestureDetector.GestureLi
     }
 
     @Override
-    public void render () {
+    public void render() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
 
@@ -262,75 +184,20 @@ class Simulation extends ApplicationAdapter implements GestureDetector.GestureLi
 
     @Override
     public void pause() {
-        /*ses.shutdown();*/
     }
 
-    public void onStop(){
+    public void onStop() {
         issData.stopRefreshingPosition();
     }
 
     @Override
     public void resume() {
-        /*ses = Executors.newSingleThreadScheduledExecutor();
-        ses.scheduleAtFixedRate(issApiRequest, 0, REQUEST_INTERVAL, TimeUnit.MILLISECONDS);*/
         issData.startRefreshingPosition();
     }
 
-    @Override
-    public boolean keyDown(int keycode) {
-        return false;
+    public void onSlide(float slideOffset) {
     }
 
-    @Override
-    public boolean keyUp(int keycode) {
-        return false;
-    }
-
-    @Override
-    public boolean keyTyped(char character) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        lastX = screenX;
-        lastY = screenY;
-        return false;
-    }
-
-    @Override
-    public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
-    }
-
-    @Override
-    public boolean touchDragged(int screenX, int screenY, int pointer) {
-        int deltaX = screenX - lastX;
-        int deltaY = screenY - lastY;
-
-        camAxis.rotate(yAxis, -deltaX / 8);
-        cam.rotateAround(origin, yAxis, -deltaX / 8);
-        cam.rotateAround(origin, camAxis, -deltaY / 8);
-        lastX = screenX;
-        lastY = screenY;
-        return false;
-    }
-
-    @Override
-    public boolean mouseMoved(int screenX, int screenY) {
-        return false;
-    }
-
-    @Override
-    public boolean scrolled(int amount) {
-        return false;
-    }
-
-    public void onSlide(float slideOffset){
-        //scale and move simulation upwards
-    }
-
-    //I tried myself on gestures :)
     @Override
     public boolean touchDown(float x, float y, int pointer, int button) {
         return false;
@@ -353,11 +220,12 @@ class Simulation extends ApplicationAdapter implements GestureDetector.GestureLi
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
-        float dampening = 8 * (ISSMath.EARTH_R * 3.5f / cam.position.len());
+        float dampening = 8 * (float) Math.pow((ISSMath.EARTH_R * 3.5f / cam.position.len()), 2);
 
-        camAxis.rotate(yAxis, -deltaX / dampening);
-        cam.rotateAround(origin, yAxis, -deltaX / dampening);
-        cam.rotateAround(origin, camAxis, -deltaY / dampening);
+        camX.rotate(camY, -deltaX / dampening);
+        camY.rotate(camX, -deltaY / dampening);
+        cam.rotateAround(origin, camY, -deltaX / dampening);
+        cam.rotateAround(origin, camX, -deltaY / dampening);
         return false;
     }
 
@@ -368,8 +236,18 @@ class Simulation extends ApplicationAdapter implements GestureDetector.GestureLi
 
     @Override
     public boolean zoom(float initialDistance, float distance) {
-        float delta =  (initialDistance - distance) / 32;
-        float camLen = cam.position.len() + delta;
+        float delta;
+
+        if (lastInitialDist != initialDistance) {
+            delta = initialDistance - distance;
+            lastInitialDist = initialDistance;
+        } else {
+            delta = lastDist - distance;
+        }
+
+        lastDist = distance;
+
+        float camLen = cam.position.len() + delta / 2;
 
         if (camLen < ISSMath.EARTH_R * 4.9 && camLen > ISSMath.EARTH_R * 1.1) {
             cam.position.setLength(camLen);

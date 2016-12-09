@@ -15,10 +15,8 @@ public class SimulationFragment extends AndroidFragmentApplication {
         fragment.setSimulation(simulation);
         return fragment;
     }
-    //private ScheduledExecutorService ses;
 
     public Simulation simulation;
-    //public Runnable issApiRequest;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
