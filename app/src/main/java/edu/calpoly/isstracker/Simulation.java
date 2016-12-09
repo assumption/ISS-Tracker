@@ -72,6 +72,8 @@ class Simulation extends ApplicationAdapter implements GestureDetector.GestureLi
     private Vector3 camY;
     private float lastInitialDist = -1;
     private float lastDist = -1;
+    private float velocityX;
+    private float velocityY;
 
     private Vector3 issPosition;
 
@@ -160,10 +162,26 @@ class Simulation extends ApplicationAdapter implements GestureDetector.GestureLi
         issInstance.transform.setToTranslation(issPosition.x, issPosition.y, issPosition.z);
     }
 
+    private void rotateCam(float deltaT) {
+        float dampening = 8 * (float) Math.pow((ISSMath.EARTH_R * 3.5f / cam.position.len()), 2) / deltaT;
+
+        camX.rotate(camY, -velocityX / dampening);
+        cam.rotateAround(origin, camY, -velocityX / dampening);
+        camY.rotate(camX, -velocityY / dampening);
+        cam.rotateAround(origin, camX, -velocityY / dampening);
+
+        velocityX *= 0.95;
+        velocityY *= 0.95;
+    }
+
     @Override
     public void render() {
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+
+        if (velocityX != 0 || velocityY != 0) {
+            rotateCam(Gdx.graphics.getDeltaTime());
+        }
 
         cam.update();
         batch.begin(cam);
@@ -218,17 +236,23 @@ class Simulation extends ApplicationAdapter implements GestureDetector.GestureLi
 
     @Override
     public boolean fling(float velocityX, float velocityY, int button) {
+        this.velocityX = velocityX;
+        this.velocityY = velocityY;
+
         return false;
     }
 
     @Override
     public boolean pan(float x, float y, float deltaX, float deltaY) {
+        velocityX = 0;
+        velocityY = 0;
         float dampening = 8 * (float) Math.pow((ISSMath.EARTH_R * 3.5f / cam.position.len()), 2);
 
         camX.rotate(camY, -deltaX / dampening);
-        camY.rotate(camX, -deltaY / dampening);
         cam.rotateAround(origin, camY, -deltaX / dampening);
+        camY.rotate(camX, -deltaY / dampening);
         cam.rotateAround(origin, camX, -deltaY / dampening);
+
         return false;
     }
 

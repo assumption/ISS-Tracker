@@ -39,6 +39,8 @@
    float   reportRayFixture(long, float, float, float, float, float);
 }
 
+-keep class com.google.vrtoolkit.cardboard.* { *; }
+
 -dontwarn okio.**
 
 # Retrofit
