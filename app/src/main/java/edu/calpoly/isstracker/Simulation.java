@@ -68,8 +68,8 @@ class Simulation extends ApplicationAdapter implements GestureDetector.GestureLi
     private static final float Z_FAR = ISSMath.EARTH_R * 10;
 
     private Vector3 origin = new Vector3(0f, 0f, 0f);
-    private Vector3 camX = new Vector3(1f, 0f, 0f);
-    private Vector3 camY = new Vector3(0f, 1f, 0f);
+    private Vector3 camX;
+    private Vector3 camY;
     private float lastInitialDist = -1;
     private float lastDist = -1;
 
@@ -82,6 +82,9 @@ class Simulation extends ApplicationAdapter implements GestureDetector.GestureLi
         Gdx.input.setInputProcessor(new GestureDetector(this));
 
         issPosition = new Vector3();
+
+        camX = new Vector3(1f, 0f, 0f);
+        camY = new Vector3(0f, 1f, 0f);
 
         cam = new PerspectiveCamera(75f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
         cam.near = Z_NEAR;
