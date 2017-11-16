@@ -1,145 +1,146 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        android:orientation="vertical"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/grey_900"
-        android:fitsSystemWindows="true">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/grey_900"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
 
 
     <android.support.design.widget.AppBarLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:stateListAnimator="@animator/toolbar_raise">
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stateListAnimator="@animator/toolbar_raise">
 
         <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
     </android.support.design.widget.AppBarLayout>
 
     <ScrollView
-            android:id="@+id/scroll_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+        android:id="@+id/scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
         <LinearLayout
-                android:orientation="vertical"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
             <ImageView
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_gravity="center_horizontal"
-                    android:src="@drawable/ic_launcher"
-                    android:padding="8dp"/>
+                android:id="@+id/icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:padding="8dp"
+                android:src="@drawable/ic_launcher" />
 
             <TextView
-                    android:id="@+id/version"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    style="@style/AppTheme.AboutActivity.TextViewStyle"/>
+                android:id="@+id/version"
+                style="@style/AppTheme.AboutActivity.TextViewStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal" />
 
             <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp">
 
                 <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:background="@color/a_bit_lighter_than_grey_900">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/a_bit_lighter_than_grey_900"
+                        android:orientation="horizontal">
 
                         <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:src="@drawable/ic_group_white_24dp"
-                                android:layout_margin="16dp"/>
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="16dp"
+                            android:src="@drawable/ic_group_white_24dp" />
 
                         <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/authors"
-                                android:layout_gravity="center_vertical"
-                                style="@style/AppTheme.AboutActivity.TextViewStyle.Headline"/>
+                            style="@style/AppTheme.AboutActivity.TextViewStyle.Headline"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/authors" />
                     </LinearLayout>
 
                     <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/alexander_chamberlain"
-                            style="@style/AppTheme.AboutActivity.TextViewStyle"/>
+                        style="@style/AppTheme.AboutActivity.TextViewStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/alexander_chamberlain" />
 
                     <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:text="@string/lukas_koller"
-                            style="@style/AppTheme.AboutActivity.TextViewStyle"/>
+                        style="@style/AppTheme.AboutActivity.TextViewStyle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/lukas_koller" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
 
             <android.support.v7.widget.CardView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="16dp"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp">
 
                 <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
 
                     <LinearLayout
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:orientation="horizontal"
-                            android:background="@color/a_bit_lighter_than_grey_900">
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:background="@color/a_bit_lighter_than_grey_900"
+                        android:orientation="horizontal">
 
                         <ImageView
-                                android:layout_width="30dp"
-                                android:layout_height="30dp"
-                                android:src="@drawable/ic_library_books_white_24dp"
-                                android:layout_margin="16dp"/>
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_margin="16dp"
+                            android:src="@drawable/ic_library_books_white_24dp" />
 
                         <TextView
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content"
-                                android:text="@string/libraries"
-                                android:layout_gravity="center_vertical"
-                                style="@style/AppTheme.AboutActivity.TextViewStyle.Headline"/>
+                            style="@style/AppTheme.AboutActivity.TextViewStyle.Headline"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:text="@string/libraries" />
                     </LinearLayout>
 
                     <include
-                            android:id="@+id/license_item_1"
-                            layout="@layout/license_item"/>
+                        android:id="@+id/license_item_1"
+                        layout="@layout/license_item" />
+
+                    <!--Google Play Service Attribution no longer needed-->
+                    <!--<include
+                        android:id="@+id/license_item_2"
+                        layout="@layout/license_item" />-->
 
                     <include
-                            android:id="@+id/license_item_2"
-                            layout="@layout/license_item"/>
+                        android:id="@+id/license_item_3"
+                        layout="@layout/license_item" />
 
                     <include
-                            android:id="@+id/license_item_3"
-                            layout="@layout/license_item"/>
+                        android:id="@+id/license_item_4"
+                        layout="@layout/license_item" />
 
                     <include
-                            android:id="@+id/license_item_4"
-                            layout="@layout/license_item"/>
-
-                    <include
-                            android:id="@+id/license_item_5"
-                            layout="@layout/license_item"/>
+                        android:id="@+id/license_item_5"
+                        layout="@layout/license_item" />
                 </LinearLayout>
             </android.support.v7.widget.CardView>
         </LinearLayout>

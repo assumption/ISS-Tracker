@@ -1,18 +1,18 @@
 package edu.calpoly.isstracker;
 
-import com.google.android.gms.common.GoogleApiAvailability;
-
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewTreeObserver;
-import android.webkit.WebView;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -23,14 +23,17 @@ public class AboutActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_about);
 
-        final Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        final Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        TextView version = (TextView) findViewById(R.id.version);
+        ImageView icon = findViewById(R.id.icon);
+        icon.setImageBitmap(getIcon());
+
+        TextView version = findViewById(R.id.version);
         version.setText(BuildConfig.VERSION_NAME);
 
-        final ScrollView scrollView = (ScrollView) findViewById(R.id.scroll_view);
+        final ScrollView scrollView = findViewById(R.id.scroll_view);
         scrollView.getViewTreeObserver()
                 .addOnScrollChangedListener(new ViewTreeObserver.OnScrollChangedListener() {
             @Override
@@ -56,25 +59,6 @@ public class AboutActivity extends AppCompatActivity {
                         .setData(Uri.parse("https://github.com/bumptech/glide")));
             }
         });
-
-        //Google Play Service Attribution
-        View license_item_2 = findViewById(R.id.license_item_2);
-        ((TextView) license_item_2.findViewById(R.id.text)).setText(R.string.google_play_servcie_attribution);
-        license_item_2.findViewById(R.id.text).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                WebView webView = new WebView(AboutActivity.this);
-                webView.loadData(GoogleApiAvailability.getInstance()
-                        .getOpenSourceSoftwareLicenseInfo(AboutActivity.this), "text/plain", "utf-8");
-
-                new AlertDialog.Builder(AboutActivity.this)
-                        .setTitle("Google Play Servcie Attribution")
-                        .setView(webView)
-                        .setPositiveButton("Ok", null)
-                        .create().show();
-            }
-        });
-        license_item_2.findViewById(R.id.button).setVisibility(View.GONE);
 
         //Retrofit license
         View license_item_3 = findViewById(R.id.license_item_3);
@@ -129,6 +113,17 @@ public class AboutActivity extends AppCompatActivity {
                         .setData(Uri.parse("https://github.com/yangweigbh/Libgdx-CardBoard-Extension")));
             }
         });
+    }
+
+    public Bitmap getIcon() {
+        //getting the app icon as a bitmap
+        Drawable icon = getApplicationInfo().loadIcon(getPackageManager());
+        Bitmap overviewIcon = Bitmap.createBitmap(icon.getIntrinsicWidth(),
+                icon.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(overviewIcon);
+        icon.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+        icon.draw(canvas);
+        return overviewIcon;
     }
 
     @Override

@@ -23,7 +23,7 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 
 public abstract class DrawerActivity extends AppCompatActivity {
 
@@ -71,7 +71,7 @@ public abstract class DrawerActivity extends AppCompatActivity {
     }
 
     public void inflateContent(int layoutId){
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
 
         //inflate content
         View content = LayoutInflater.from(this).inflate(layoutId, mDrawerLayout, false);
@@ -79,7 +79,7 @@ public abstract class DrawerActivity extends AppCompatActivity {
     }
 
     public void initNavDrawer(){
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
 
@@ -89,19 +89,21 @@ public abstract class DrawerActivity extends AppCompatActivity {
         mDrawerLayout.addDrawerListener(mDrawerToggle);
         mDrawerToggle.syncState();
 
-        mNavigationView = (NavigationView) findViewById(R.id.nav_view_left);
+        mNavigationView = findViewById(R.id.nav_view_left);
         NavigationMenuView navigationMenuView = (NavigationMenuView) mNavigationView.getChildAt(0);
         if (navigationMenuView != null) {
             navigationMenuView.setVerticalScrollBarEnabled(false);
         }
 
-        ImageView headerImage =
-                (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.header_image_view);
+        ImageView headerImage = mNavigationView.getHeaderView(0).findViewById(R.id.header_image_view);
+
+        RequestOptions options = new RequestOptions()
+                .override(1280, 800)
+                .centerCrop();
+
         Glide.with(this)
                 .load("https://pixabay.com/static/uploads/photo/2011/12/14/12/11/astronaut-11080_1280.jpg")
-                .diskCacheStrategy(DiskCacheStrategy.SOURCE)
-                .override(1280, 800)
-                .centerCrop()
+                .apply(options)
                 .into(headerImage);
 
         mNavigationView.setNavigationItemSelectedListener(
