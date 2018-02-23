@@ -1,5 +1,5 @@
 <resources>
-    <string name="api_key">AIzaSyB0RLmsquEqkDAudZWpkkAtcmVK0E8Xdww</string>
+    <string name="api_key">API_KEY</string>
 
     <string name="app_name">ISS-Tracker</string>
     <string name="bottom_sheet_title">ISS Data</string>
